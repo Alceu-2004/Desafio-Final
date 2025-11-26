@@ -1,7 +1,7 @@
 {
   "name": "desafio-final",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "App.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,8 +9,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/material-top-tabs": "^7.4.4",
     "@react-navigation/native": "^7.1.21",
+    "axios": "^1.13.2",
     "expo": "~54.0.25",
     "expo-constants": "~18.0.10",
     "expo-linking": "~8.0.9",
@@ -29,6 +31,7 @@
   },
   "private": true,
   "devDependencies": {
+    "@types/axios": "^0.14.4",
     "@types/react": "^19.2.7",
     "@types/react-native": "^0.73.0",
     "typescript": "^5.9.3"
