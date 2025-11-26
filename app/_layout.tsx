@@ -1,7 +1,6 @@
 import { Stack } from "expo-router";
 import React from "react";
 import { AuthProvider, useAuth } from "../src/contexts/AuthContext";
-import { FavoritesProvider } from "../src/contexts/FavoritesContext";
 
 function RootLayoutNav() {
   const { user } = useAuth();
@@ -23,9 +22,7 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <FavoritesProvider>
         <RootLayoutNav />
-      </FavoritesProvider>
     </AuthProvider>
   );
 }

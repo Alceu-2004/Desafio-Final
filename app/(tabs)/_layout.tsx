@@ -5,7 +5,6 @@ export default function TabsLayout() {
     <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="home" options={{ title: "Home" }} />
       <Tabs.Screen name="search" options={{ title: "Buscar" }} />
-      <Tabs.Screen name="favorites" options={{ title: "Favoritos" }} />
       <Tabs.Screen name="about" options={{ title: "Sobre" }} />
     </Tabs>
   );
