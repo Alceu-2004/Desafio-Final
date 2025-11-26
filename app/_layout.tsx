@@ -1,14 +1,31 @@
 import { Stack } from "expo-router";
+import React from "react";
+import { AuthProvider, useAuth } from "../src/contexts/AuthContext";
 import { FavoritesProvider } from "../src/contexts/FavoritesContext";
+
+function RootLayoutNav() {
+  const { user } = useAuth();
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      {user ? (
+        <Stack.Screen name="(tabs)" />
+      ) : (
+        <Stack.Screen name="(auth)" />
+      )}
+
+      <Stack.Screen name="movie/[id]" />
+      <Stack.Screen name="add-movie/index" />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   return (
-    <FavoritesProvider>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="movie/[id]" options={{ title: "Detalhes" }} />
-        <Stack.Screen name="add-movie/index" options={{ title: "Adicionar Filmes" }} />
-      </Stack>
-    </FavoritesProvider>
+    <AuthProvider>
+      <FavoritesProvider>
+        <RootLayoutNav />
+      </FavoritesProvider>
+    </AuthProvider>
   );
 }
