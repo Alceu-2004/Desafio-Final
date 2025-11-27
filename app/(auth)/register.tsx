@@ -24,7 +24,7 @@ export default function RegisterScreen() {
     }
 
     await register(email, senha);
-    router.replace("(tabs)/home");
+    router.replace("(drawer)/home");
   }
 
   return (

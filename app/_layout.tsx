@@ -8,13 +8,10 @@ function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {user ? (
-        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(drawer)" />
       ) : (
         <Stack.Screen name="(auth)" />
       )}
-
-      <Stack.Screen name="movie/[id]" />
-      <Stack.Screen name="add-movie/index" />
     </Stack>
   );
 }
@@ -22,7 +19,7 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-        <RootLayoutNav />
+      <RootLayoutNav />
     </AuthProvider>
   );
 }

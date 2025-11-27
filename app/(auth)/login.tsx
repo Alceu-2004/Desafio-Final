@@ -30,7 +30,7 @@ export default function LoginScreen() {
       return;
     }
 
-    router.replace("(tabs)/home");
+    router.replace("(drawer)/home");
   }
 
   return (

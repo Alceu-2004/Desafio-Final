@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthContextType {
   user: string | null;
+  isLoading: boolean; 
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -12,14 +13,23 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
     loadUser();
   }, []);
 
   async function loadUser() {
-    const stored = await AsyncStorage.getItem("user");
-    if (stored) setUser(stored);
+    try {
+      const stored = await AsyncStorage.getItem("user");
+      if (stored) {
+        setUser(stored);
+      }
+    } catch (error) {
+        console.error("Erro ao carregar usuário:", error);
+    } finally {
+      setIsLoading(false); 
+    }
   }
 
   async function register(email: string, password: string) {
@@ -47,12 +57,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function logout() {
-    await AsyncStorage.removeItem("user");
-    setUser(null);
+    try{
+      await AsyncStorage.removeItem("user");
+    } catch (e){
+      console.error("Erro ao remover item do AsyncStorage:", e)
+    } finally {
+      setUser(null);
+    }
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
