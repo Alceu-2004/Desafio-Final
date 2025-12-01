@@ -37,11 +37,12 @@ export default function LoginScreen() {
     <View style={styles.background}>
       <View style={styles.views}> 
         <Image source={require("../../assets/cinevault.png")}  style={styles.image}/>
-        <Text style={styles.title}>Entrar na sua conta 
-        <br />  <Text style={styles.title2}>Digite seu e-mail e senha para acessar
+        <Text style={styles.title}>Entrar na sua conta </Text>
 
-</Text>
-        </Text>
+          <Text style={styles.titles2}>Digite seu e-mail e senha para acessar</Text>
+      
+        
+
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 28,
     alignSelf: "center",
-    width: 540,
+    width: 300,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.10,
@@ -97,10 +98,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textAlign: "center",
     fontWeight: "bold",
-    marginBottom: 36,
+    marginBottom: 16,
     color: "#12223b"
   },
-  title2: {
+  titles2: {
     fontSize: 22,
     textAlign: "center",
     marginBottom: 36,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    backgroundColor: "#143a77",
+    backgroundColor: "#D8AE82",
     paddingVertical: 12,
     borderRadius: 16,
     marginTop: 12,

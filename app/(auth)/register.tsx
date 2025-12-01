@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from "react-native";
 import { useAuth } from "../../src/contexts/AuthContext";
 import { router } from "expo-router";
 
@@ -45,20 +45,34 @@ export default function RegisterScreen() {
   return (
     <View style={styles.background}>
       <View style={styles.views}>
+        <Image source={require("../../assets/cinevault.png")} style={styles.image} />
         <Text style={styles.title}>Criar conta</Text>
+        <Text style={styles.titles2}>Digite seu e-mail e senha para acessar</Text>
+        
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Seu nome Completo"
+          placeholderTextColor="#aaa"
+        />      
+        <TextInput
+          style={styles.input}
+          placeholder="seu@gmail.com"
           value={email}
           onChangeText={setEmail}
+          placeholderTextColor=""
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="•••••"
+          secureTextEntry
+          value={senha}
+          onChangeText={setSenha}
           placeholderTextColor="#aaa"
         />
         <TextInput
           style={styles.input}
-          placeholder="Senha"
+          placeholder="••••• confirmar senha "
           secureTextEntry
-          value={senha}
-          onChangeText={setSenha}
           placeholderTextColor="#aaa"
         />
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
@@ -102,7 +116,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 36,
     color: "#12223b"
-  },
+  },titles2: {
+    fontSize: 22,
+    textAlign: "center",
+    marginBottom: 36,
+    fontWeight: "normal",
+    color: "#12223b"},
   input: {
     borderWidth: 1.2,
     borderColor: "#d1d1d7",
@@ -114,7 +133,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    backgroundColor: "#143a77",
+    backgroundColor: "#D8AE82",
     paddingVertical: 12,
     borderRadius: 16,
     marginTop: 12,
@@ -133,5 +152,10 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: "#143a77",
     fontWeight: "600"
+  },
+  image: {
+    width: 250,
+    height: 130,
+    marginBottom: 20,
   },
 });
