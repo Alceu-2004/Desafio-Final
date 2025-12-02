@@ -47,34 +47,48 @@ export default function RegisterScreen() {
       <View style={styles.views}>
         <Image source={require("../../assets/cinevault.png")} style={styles.image} />
         <Text style={styles.title}>Criar conta</Text>
-        <Text style={styles.titles2}>Digite seu e-mail e senha para acessar</Text>
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Seu nome Completo"
-          placeholderTextColor="#aaa"
-        />      
-        <TextInput
-          style={styles.input}
-          placeholder="seu@gmail.com"
-          value={email}
-          onChangeText={setEmail}
-          placeholderTextColor=""
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="•••••"
-          secureTextEntry
-          value={senha}
-          onChangeText={setSenha}
-          placeholderTextColor="#aaa"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="••••• confirmar senha "
-          secureTextEntry
-          placeholderTextColor="#aaa"
-        />
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.titles3}>Nome</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Seu nome Completo"
+            placeholderTextColor="#aaa"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.titles3}>E-mail</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="seu@gmail.com"
+            value={email}
+            onChangeText={setEmail}
+            placeholderTextColor="#aaa"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.titles3}>Senha</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="•••••"
+            secureTextEntry
+            value={senha}
+            onChangeText={setSenha}
+            placeholderTextColor="#aaa"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.titles3}>Confirmar senha</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="•••••"
+            secureTextEntry
+            placeholderTextColor="#aaa"
+          />
+        </View>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
@@ -94,16 +108,16 @@ const styles = StyleSheet.create({
   },
   views: {
     backgroundColor: "#fff",
+    height:780,
     borderRadius: 18,
     padding: 28,
     alignSelf: "center",
-    width: 340,
+    width: 400,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 2},
     shadowOpacity: 0.10,
     shadowRadius: 7,
     elevation: 4,
-    alignItems: "center"
   },
   container: {
     flex: 1,
@@ -119,15 +133,31 @@ const styles = StyleSheet.create({
   },titles2: {
     fontSize: 22,
     textAlign: "center",
-    marginBottom: 36,
+    marginBottom: 16,
     fontWeight: "normal",
     color: "#12223b"},
+      titles3: {
+      fontSize:15,
+      marginBottom: 10,
+      fontWeight: "normal",
+      color: "#12223b",
+      alignSelf: "flex-start",
+      width: "100%"},
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 18,
+    gap: 16,
+  },
+  inputContainer: {
+    width: "100%",
+    marginBottom: 18,
+  },
   input: {
     borderWidth: 1.2,
     borderColor: "#d1d1d7",
     backgroundColor: "#fafbfc",
     padding: 14,
-    marginBottom: 18,
     borderRadius: 14,
     fontSize: 16,
     width: "100%",
@@ -157,5 +187,6 @@ const styles = StyleSheet.create({
     width: 250,
     height: 130,
     marginBottom: 20,
+    alignSelf:"center",
   },
 });

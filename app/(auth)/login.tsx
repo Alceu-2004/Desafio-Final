@@ -37,7 +37,7 @@ export default function LoginScreen() {
     <View style={styles.background}>
       <View style={styles.views}> 
         <Image source={require("../../assets/cinevault.png")}  style={styles.image}/>
-        <Text style={styles.title}>Entrar na sua conta </Text>
+        <Text style={styles.title}> LOGIN</Text>
 
           <Text style={styles.titles2}>Digite seu e-mail e senha para acessar</Text>
       
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 28,
     alignSelf: "center",
-    width: 300,
+    width: 400,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.10,
