@@ -1,4 +1,5 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = axios.create({
   baseURL: "https://imdb8.p.rapidapi.com",
@@ -9,40 +10,125 @@ const api = axios.create({
 });
 
 function extractId(path: string) {
-  return path.replace("/title/", "").replace("/", "");
+  if (!path) return "";
+  // Remove "/title/" do início e "/" do final
+  let id = path.replace("/title/", "");
+  id = id.replace(/\/$/, ""); // Remove barra final se existir
+  return id;
+}
+
+// Cache por 1 hora (3600000 ms)
+const CACHE_DURATION = 3600000;
+const CACHE_KEY = "popularMoviesCache";
+
+async function getCachedMovies() {
+  try {
+    const cached = await AsyncStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+      if (now - timestamp < CACHE_DURATION) {
+        return data;
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao ler cache:", error);
+  }
+  return null;
+}
+
+async function setCachedMovies(movies: any[]) {
+  try {
+    await AsyncStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({ data: movies, timestamp: Date.now() })
+    );
+  } catch (error) {
+    console.error("Erro ao salvar cache:", error);
+  }
 }
 
 export default {
   async getPopularMovies() {
-    console.log("🔍 Testando conexão com a API...");
+    // Verificar cache primeiro
+    const cached = await getCachedMovies();
+    if (cached) {
+      console.log("📦 Usando filmes do cache");
+      return cached;
+    }
 
-    const res = await api.get("/title/get-most-popular-movies");
+    console.log("🔍 Buscando filmes da API...");
 
-     console.log("Resposta da API:", res.data);
+    try {
+      const res = await api.get("/title/get-most-popular-movies");
 
-    const ids = res.data.map((rawId: string) => extractId(rawId));
+      console.log("Resposta da API:", res.data);
+      console.log("Tipo de dados:", Array.isArray(res.data) ? "Array" : typeof res.data);
 
-    const movies = await Promise.all(
-      ids.slice(0, 20).map(async (id: string) => {
-        try {
-          const details = await api.get(`/title/get-overview-details`, {
-            params: { tconst: id },
-          });
+      if (!res.data || !Array.isArray(res.data)) {
+        console.error("❌ Resposta da API não é um array:", res.data);
+        throw new Error("Formato de resposta inválido da API");
+      }
 
-          return {
-            id,
-            title: details.data?.title?.title ?? "Título desconhecido",
-            image: details.data?.title?.image?.url,
-            rating: details.data?.ratings?.rating ?? "N/A",
-            plot: details.data?.plotSummary?.text,
-          };
-        } catch {
-          return null;
+      const ids = res.data.map((rawId: string) => {
+        const id = extractId(rawId);
+        console.log(`Extraído: ${rawId} -> ${id}`);
+        return id;
+      }).filter(id => id); // Remove IDs vazios
+      
+      console.log("IDs extraídos:", ids);
+
+      // Reduzir para apenas 5 filmes para evitar muitas requisições
+      const movies = await Promise.all(
+        ids.slice(0, 5).map(async (id: string, index: number) => {
+          try {
+            // Adicionar delay entre requisições para evitar rate limit
+            await new Promise((resolve) => setTimeout(resolve, index * 300));
+
+            console.log(`🔍 Buscando detalhes do filme ${index + 1}/5: ${id}`);
+            const details = await api.get(`/title/get-overview-details`, {
+              params: { tconst: id },
+            });
+
+            const movie = {
+              id,
+              title: details.data?.title?.title ?? "Título desconhecido",
+              image: details.data?.title?.image?.url,
+              rating: details.data?.ratings?.rating ?? "N/A",
+              plot: details.data?.plotSummary?.text,
+            };
+
+            console.log(`✅ Filme ${index + 1} carregado:`, movie.title);
+            return movie;
+          } catch (error: any) {
+            console.error(`❌ Erro ao carregar filme ${id}:`, error.response?.status || error.message);
+            if (error.response?.status === 429) {
+              console.warn("⚠️ Rate limit atingido para filme:", id);
+            }
+            return null;
+          }
+        })
+      );
+
+      const filteredMovies = movies.filter(Boolean);
+      
+      // Salvar no cache
+      if (filteredMovies.length > 0) {
+        await setCachedMovies(filteredMovies);
+      }
+
+      return filteredMovies;
+    } catch (error: any) {
+      if (error.response?.status === 429) {
+        console.warn("⚠️ Erro 429: Muitas requisições. Tentando usar cache...");
+        const cached = await getCachedMovies();
+        if (cached) {
+          return cached;
         }
-      })
-    );
-
-    return movies.filter(Boolean);
+        throw new Error("Limite de requisições excedido. Tente novamente mais tarde.");
+      }
+      throw error;
+    }
   },
 
   async searchMovies(query: string) {

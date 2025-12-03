@@ -84,6 +84,28 @@ export default function DrawerLayout() {
       />
       
       <Drawer.Screen
+        name="assistidos"
+        options={{
+          title: "Assistidos",
+          drawerIcon: ({ color }) => (
+            <Ionicons name="checkmark-circle-outline" size={24} color={color} />
+          ),
+          headerRight: undefined,
+        }}
+      />
+      
+      <Drawer.Screen
+        name="quero-assistir"
+        options={{
+          title: "Quero Assistir",
+          drawerIcon: ({ color }) => (
+            <Ionicons name="bookmark-outline" size={24} color={color} />
+          ),
+          headerRight: undefined,
+        }}
+      />
+      
+      <Drawer.Screen
         name="add-movie/index"
         options={{
           title: "Adicionar Filme",

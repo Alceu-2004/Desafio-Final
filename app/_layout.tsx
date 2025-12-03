@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import React from "react";
 import { AuthProvider, useAuth } from "../src/contexts/AuthContext";
+import { MoviesProvider } from "../src/contexts/MoviesContext";
 
 function RootLayoutNav() {
   const { user } = useAuth();
@@ -19,7 +20,9 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <MoviesProvider>
+        <RootLayoutNav />
+      </MoviesProvider>
     </AuthProvider>
   );
 }
