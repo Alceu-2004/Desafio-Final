@@ -30,7 +30,7 @@ export default function AssistidosScreen() {
       <Text style={styles.title}>Filmes Assistidos</Text>
       <Text style={styles.count}>{watchedMovies.length} filme(s)</Text>
       <FlatList
-        data={watchedMovies}
+        data={watchedMovies.slice().reverse()}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <MovieCard movie={item} />}
         contentContainerStyle={styles.list}

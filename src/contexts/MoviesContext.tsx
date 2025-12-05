@@ -2,11 +2,17 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Movie } from "../types/movie";
 
+interface WatchedMovie extends Movie {
+    userRating: number;
+}
+
 interface MoviesContextType {
-  watchedMovies: Movie[];
+
+  watchedMovies: WatchedMovie[];
   wantToWatchMovies: Movie[];
   isLoading: boolean;
-  addWatchedMovie: (movie: Movie) => Promise<void>;
+
+  addWatchedMovie: (movie: Movie, userRating: number) => Promise<void>;
   removeWatchedMovie: (movieId: string) => Promise<void>;
   addWantToWatchMovie: (movie: Movie) => Promise<void>;
   removeWantToWatchMovie: (movieId: string) => Promise<void>;
@@ -17,7 +23,7 @@ interface MoviesContextType {
 const MoviesContext = createContext<MoviesContextType>({} as MoviesContextType);
 
 export function MoviesProvider({ children }: { children: ReactNode }) {
-  const [watchedMovies, setWatchedMovies] = useState<Movie[]>([]);
+  const [watchedMovies, setWatchedMovies] = useState<WatchedMovie[]>([]);
   const [wantToWatchMovies, setWantToWatchMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,7 +36,7 @@ export function MoviesProvider({ children }: { children: ReactNode }) {
     try {
       const stored = await AsyncStorage.getItem("watchedMovies");
       if (stored) {
-        const movies = JSON.parse(stored);
+        const movies: WatchedMovie[] = JSON.parse(stored);
         setWatchedMovies(movies);
       }
     } catch (error) {
@@ -40,9 +46,26 @@ export function MoviesProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function addWatchedMovie(movie: Movie) {
+  async function loadWantToWatchMovies() {
     try {
-      const updatedMovies = [...watchedMovies, movie];
+      const stored = await AsyncStorage.getItem("wantToWatchMovies");
+      if (stored) {
+        const movies: Movie[] = JSON.parse(stored);
+        setWantToWatchMovies(movies);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar filmes que quero assistir:", error);
+    }
+  }
+
+  async function addWatchedMovie(movie: Movie, userRating: number) {
+    try {
+      const newWatchedMovie: WatchedMovie = {
+        ...movie,
+        userRating: userRating,
+      };
+
+      const updatedMovies = [...watchedMovies, newWatchedMovie];
       await AsyncStorage.setItem("watchedMovies", JSON.stringify(updatedMovies));
       setWatchedMovies(updatedMovies);
     } catch (error) {
@@ -54,23 +77,12 @@ export function MoviesProvider({ children }: { children: ReactNode }) {
     try {
       const updatedMovies = watchedMovies.filter((movie) => movie.id !== movieId);
       await AsyncStorage.setItem("watchedMovies", JSON.stringify(updatedMovies));
-      setWatchedMovies(updatedMovies);
+      setWatchedMovies(updatedMovies); 
     } catch (error) {
       console.error("Erro ao remover filme assistido:", error);
     }
   }
 
-  async function loadWantToWatchMovies() {
-    try {
-      const stored = await AsyncStorage.getItem("wantToWatchMovies");
-      if (stored) {
-        const movies = JSON.parse(stored);
-        setWantToWatchMovies(movies);
-      }
-    } catch (error) {
-      console.error("Erro ao carregar filmes que quero assistir:", error);
-    }
-  }
 
   async function addWantToWatchMovie(movie: Movie) {
     try {
@@ -92,6 +104,7 @@ export function MoviesProvider({ children }: { children: ReactNode }) {
     }
   }
 
+
   function isMovieWatched(movieId: string): boolean {
     return watchedMovies.some((movie) => movie.id === movieId);
   }
@@ -101,20 +114,20 @@ export function MoviesProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <MoviesContext.Provider
-      value={{
-        watchedMovies,
-        wantToWatchMovies,
-        isLoading,
-        addWatchedMovie,
-        removeWatchedMovie,
-        addWantToWatchMovie,
-        removeWantToWatchMovie,
-        isMovieWatched,
-        isMovieWantToWatch,
-      }}
-    >
-      {children}
+  <MoviesContext.Provider
+  value={{
+    watchedMovies,
+    wantToWatchMovies,
+    isLoading,
+    addWatchedMovie,
+    removeWatchedMovie,
+    addWantToWatchMovie,
+    removeWantToWatchMovie,
+    isMovieWatched,
+    isMovieWantToWatch,
+  }}
+  >
+    {children}
     </MoviesContext.Provider>
   );
 }
@@ -122,4 +135,3 @@ export function MoviesProvider({ children }: { children: ReactNode }) {
 export function useMovies() {
   return useContext(MoviesContext);
 }
-
